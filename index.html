@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>形聲</title>
+        <meta charset="utf-8">
+        <link rel="icon" href="photo/logo.ico">
+        <link rel="stylesheet" href="index.css">
+        <script src="jquery/jquery-3.5.1.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    </head>
+    
+    <body>
+       <!--動態logo-->
+        <div>
+            <img src="photo/logo.gif" width="100%">
+        </div>
+       
+        <div class="container">
+            <!--按鍵-->
+            <div id="button" class="row">
+                <div class="col-lg col text-center">
+                    <a href="upload.html"><button class="button">上 傳<br>聲 音</button></a>
+                </div>
+                <div class="col-lg col text-center">
+                    <a href="listen.html"><button class="button">聆 聽<br>聲 音</button></a>
+                </div>
+                <div class="col-lg col text-center">    
+                    <a href="exhibition.html"><button class="button">展 場<br>資 訊</button></a>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+        <!--底部-->
+        <div class="container">
+            <div class="row justify-content-center" style="height: 100px;">
+                <div class="col-3 text-center">
+                    <a href="https://www.facebook.com/厚道マイナス①工作室-102583014893947/"><img id="fb" src="photo/facebook.png"></a>
+                </div>
+                <div class="col-3 text-center">
+                    <a href="https://www.instagram.com/shinsheng_/"><img id="ig" src="photo/instagram.png"></a>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 text-center"><p id="copyright">Copyright © 2020 厚道マイナス ①</p></div>
+            </div>
+        </div>
+        </footer>
+       
+        <!--回到頂端-->
+        <a href="" id="gotop"><img src="photo/top.png" width="60px"></a>
+        <script>
+            $(function(){
+                $("#gotop").click(function(){
+                    $("html,body").animate({scrollTop:0},900);
+                    return false;
+                });
+            });
+        </script>
+        
+    </body>
+</html>

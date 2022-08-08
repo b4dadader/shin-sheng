@@ -1,0 +1,27 @@
+#exhibitionbutton{
+    background-color: rgb(202, 202, 202);
+    color: rgb(89,87,87);
+}
+
+/*資訊*/
+#introduction{
+    margin: 100px 10%;
+    font-size: 20px;
+    line-height: 35px;
+}
+
+#map{
+    margin: 50px 10%;
+    font-size: 20px;
+    line-height: 35px;
+}
+
+#googlemap{
+    width: 100%;
+}
+
+@media screen and (max-width: 800px){
+    #googlemap{
+    	height: 300px;
+    }
+}

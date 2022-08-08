@@ -1,0 +1,24 @@
+#uploadbutton{
+    background-color: rgb(202, 202, 202);
+    color: rgb(89,87,87);
+}
+
+/*回答*/
+#answer{
+    margin-top: 50px;
+    padding: 0 10%;
+}
+#answer .row{
+    margin-top: 20px;
+}
+input,select,textarea{
+    width: 100%;
+}
+@media screen and (max-width: 560px){
+    .modal p{
+        font-size: 12px;
+    }
+    #btn_close{
+    	font-size: 12px;
+    }  
+}
