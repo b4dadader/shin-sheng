@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <!--10分鐘自動刷新，希望能做到即時抓資料而不用刷新-->
+    <!--<meta http-equiv="refresh" content="600">-->
+	<title>形聲 playSound</title>
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-firestore.js"></script>
+</head>
+<body>
+    <h2>聲音分類：</h2>
+    <select id="soundtype">
+        <option value="all">一般時段</option>
+        <option value="動漫卡通">=限定=動漫卡通</option>
+        <option value="廣告">=限定=廣告</option>
+    </select>
+	<audio id="play1" preload="none" volume="max" loop="loop"></audio>
+	<audio id="play2" preload="none" volume="max" loop="loop"></audio>
+	<audio id="play3" preload="none" volume="max" loop="loop"></audio>
+    <audio id="play4" preload="none" volume="max" loop="loop"></audio>
+    <audio id="play5" preload="none" volume="max" loop="loop"></audio>
+    <audio id="play6" preload="none" volume="max" loop="loop"></audio>
+    <audio id="play7" preload="none" volume="max" loop="loop"></audio>
+    <audio id="play8" preload="none" volume="max" loop="loop"></audio>
+    <audio id="play9" preload="none" volume="max" loop="loop"></audio>
+    <br>
+    <input type="button" id="send" value="執行">
+    <div id="progress">無讀取</div>
+</body>
+<script type="text/javascript">
+var firebaseConfig = {
+    apiKey: "AIzaSyCAeZNkQKQETvlIPhJ_iFcaTipQmwSOdUk",
+    authDomain: "shinsheng-53c4c.firebaseapp.com",
+    databaseURL: "https://shinsheng-53c4c-default-rtdb.firebaseio.com",
+    projectId: "shinsheng-53c4c",
+    storageBucket: "shinsheng-53c4c.appspot.com",
+    messagingSenderId: "903574454139",
+    appId: "1:903574454139:web:dff1fe995ad2ccffd487de",
+    measurementId: "G-PYQZBBB4QG"
+};
+firebase.initializeApp(firebaseConfig);
+//……………………………………………………………………..
+const db = firebase.firestore();
+const storage = firebase.storage();
+var docRef = db.collection("postData");
+var info={};
+var i=0;
+var play1=document.getElementById("play1");
+var play1_bool=0;
+var play2=document.getElementById("play2");
+var play2_bool=false;
+var play3=document.getElementById("play3");
+var play3_bool=false;
+var play4=document.getElementById("play4");
+var play4_bool=false;
+var play5=document.getElementById("play5");
+var play5_bool=false;
+var play6=document.getElementById("play6");
+var play6_bool=false;
+var play7=document.getElementById("play7");
+var play7_bool=false;
+var play8=document.getElementById("play8");
+var play8_bool=false;
+var play9=document.getElementById("play9");
+var play9_bool=false;
+//選擇聲音分類
+const soundtype=document.getElementById("soundtype");
+//上傳進度文字
+const progress=document.getElementById("progress");
+
+send.addEventListener("click",function(){
+    let type=soundtype.value;
+    progress.innerHTML="讀取-->"+type;
+    //一般時段
+    if(type=="all")
+    {
+        docRef = db.collection("postData");
+        i=0;
+        docRef.get().then(function(querySnapshot) {
+            querySnapshot.forEach(function(doc) {
+                // doc.data() is never undefined for query doc snapshots
+                info[i]=doc.data();   
+                i++;
+                progress.innerHTML="讀取-->"+type+"<br>第 "+i+" 筆";
+            });
+            for(let j=0; j<i; j++)
+            {
+                storage.ref("sound/"+info[j].soundfile).getDownloadURL().then(function(url) {
+                    info[j].soundfile=url;
+                });
+                progress.innerHTML="讀取-->"+type+"<br>讀取聲音： "+(j+1)+" / "+i;
+            }
+            progress.innerHTML="讀取-->"+type+"<br>讀取完畢";
+        });
+    }
+    //期間限定
+    else
+    {
+        //期間限定的集合
+        docRef = db.collection("playData");
+        i=0;
+        docRef.get().then(function(querySnapshot) {
+            querySnapshot.forEach(function(doc) {
+                // doc.data() is never undefined for query doc snapshots
+                if(doc.data().type==type)
+                {
+                    info[i]=doc.data();   
+                    i++;
+                    progress.innerHTML="讀取-->"+type+"<br>第 "+i+" 筆";
+                }
+            });
+            for(let j=0; j<i; j++)
+            {
+                storage.ref("sound/"+info[j].soundfile).getDownloadURL().then(function(url) {
+                    info[j].soundfile=url;
+                });
+                progress.innerHTML="讀取-->"+type+"<br>讀取聲音： "+(j+1)+" / "+i;
+            }
+            progress.innerHTML="讀取-->"+type+"<br>讀取完畢";
+        });
+    }
+});
+
+function getRandom(x){
+    //0 ~ x-1
+    return Math.floor(Math.random()*x);
+};
+document.onkeydown=function(e){    //對整個頁面監聽  
+	var keyNum=window.event ? e.keyCode :e.which;       //獲取被按下的鍵值  
+	//判斷如果使用者按下了q
+	if(keyNum==81 && !play1_bool){
+        rand=i-getRandom(10)-1;
+        play1.src=info[rand].soundfile;
+        play1.play(); 
+        play1_bool=true;
+        console.log(info[rand].title);
+        console.log(" at play1");  
+	}  
+
+	//判斷如果使用者按下了a，  
+	if(keyNum==65 && !play2_bool){
+        rand=i-getRandom(i/3)-1;  
+        play2.src=info[rand].soundfile;
+        play2.play(); 
+        play2_bool=true;
+        console.log(info[rand].title);
+        console.log(" at play2");    
+	}   
+
+	//判斷如果使用者按下了z  
+	if(keyNum==90 && !play3_bool){
+        rand=getRandom(i);  
+        play3.src=info[rand].soundfile;
+        play3.play(); 
+        play3_bool=true;
+        console.log(info[rand].title);
+        console.log(" at play3");   
+    }
+
+        //判斷如果使用者按下了w  
+    if(keyNum==87 && !play4_bool){
+        rand=i-getRandom(10)-1;  
+        play4.src=info[rand].soundfile;
+        play4.play(); 
+        play4_bool=true;
+        console.log(info[rand].title);
+        console.log(" at play4");    
+    }
+
+        //判斷如果使用者按下了s  
+    if(keyNum==83 && !play5_bool){
+        rand=getRandom(i/2);  
+        play5.src=info[rand].soundfile;
+        play5.play(); 
+        play5_bool=true;
+        console.log(info[rand].title);
+        console.log(" at play5");     
+    }
+
+        //判斷如果使用者按下了x  
+    if(keyNum==88 && !play6_bool){
+        rand=i-getRandom(i/2)-1;  
+        play6.src=info[rand].soundfile;
+        play6.play(); 
+        play6_bool=true;
+        console.log(info[rand].title);
+        console.log(" at play6");    
+    }
+
+        //判斷如果使用者按下了e  
+    if(keyNum==69 && !play7_bool){
+        rand=getRandom(i);  
+        play7.src=info[rand].soundfile;
+        play7.play(); 
+        play7_bool=true;
+        console.log(info[rand].title);
+        console.log(" at play7");    
+    }
+
+        //判斷如果使用者按下了d  
+    if(keyNum==68 && !play8_bool){
+        rand=i-getRandom(10)-1;
+        play8.src=info[rand].soundfile;
+        play8.play(); 
+        play8_bool=true;
+        console.log(info[rand].title);
+        console.log(" at play8");    
+    }
+        //判斷如果使用者按下了c  
+    if(keyNum==67 && !play9_bool){
+        rand=getRandom(i);  
+        play9.src=info[rand].soundfile;
+        play9.play(); 
+        play9_bool=true;
+        console.log(info[rand].title);
+        console.log(" at play9");     
+    } 
+}
+
+document.onkeyup=function(e){
+    var keyNum=window.event ? e.keyCode :e.which;
+    //判斷如果使用者放開了q
+    if(keyNum==81){
+        play1.pause();
+        play1_bool=false;
+    }  
+
+    //判斷如果使用者按下了a，  
+    if(keyNum==65){
+        play2.pause();
+        play2_bool=false;
+    }   
+
+    //判斷如果使用者按下了z  
+    if(keyNum==90){
+        play3.pause();
+        play3_bool=false;
+    }
+
+        //判斷如果使用者按下了w  
+    if(keyNum==87){
+        play4.pause();
+        play4_bool=false;
+    }
+
+        //判斷如果使用者按下了s  
+    if(keyNum==83){
+        play5.pause();
+        play5_bool=false;
+    }
+
+        //判斷如果使用者按下了x  
+    if(keyNum==88){
+        play6.pause();
+        play6_bool=false;
+    }
+
+        //判斷如果使用者按下了e  
+    if(keyNum==69){
+        play7.pause();
+        play7_bool=false;
+    }
+
+        //判斷如果使用者按下了d  
+    if(keyNum==68){
+        play8.pause();
+        play8_bool=false;
+    }
+        //判斷如果使用者按下了c  
+    if(keyNum==67){
+        play9.pause();
+        play9_bool=false;
+    }
+}
+
+</script>
+</html>

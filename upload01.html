@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>上傳聲音 ==工作人員專用==</title>
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-firestore.js"></script>
+</head>
+<body>
+    <h2>聲音檔案：</h2>
+    <input type="file" id="soundButton" accept=".mp3,.wav,.m4a">
+
+    <h2>圖片檔案：</h2>自由投稿
+    <input type="file" id="imageButton" accept=".jpg,.png">
+
+    <h2>聲音標題：</h2>
+    <input type="text" id="soundtitle" maxlength="11">
+
+    <h2>聲音分類：</h2>
+    <select id="soundtype">
+        <option value="">請選擇聲音類別</option>
+        <option value="動漫卡通">動漫卡通</option>
+        <option value="廣告">廣告</option>
+    </select>
+    <br>
+    <input type="button" id="send" value="送出">
+    <div id="progress"></div>
+    <input type="button" value="首頁" onclick="location.href='index.html'">
+    <input type="button" value="聆聽聲音" onclick="location.href='listen01.html'">
+</body>
+<script>
+let firebaseConfig = {
+    apiKey: "AIzaSyCAeZNkQKQETvlIPhJ_iFcaTipQmwSOdUk",
+    authDomain: "shinsheng-53c4c.firebaseapp.com",
+    databaseURL: "https://shinsheng-53c4c-default-rtdb.firebaseio.com",
+    projectId: "shinsheng-53c4c",
+    storageBucket: "shinsheng-53c4c.appspot.com",
+    messagingSenderId: "903574454139",
+    appId: "1:903574454139:web:dff1fe995ad2ccffd487de",
+    measurementId: "G-PYQZBBB4QG"
+};
+firebase.initializeApp(firebaseConfig);
+//……………………………………………………………………..
+const storage = firebase.storage();
+const db = firebase.firestore();
+
+//選音檔的按鈕
+const soundButton=document.getElementById('soundButton');
+//選圖檔的按鈕
+const imageButton=document.getElementById('imageButton');
+//傳送的按鈕
+const send=document.getElementById("send");
+//音檔的檔名
+let soundfname="";
+//圖檔的檔名
+imagefname="";
+imagefiletype="";
+imagesize=0;
+//上傳進度文字
+let progress=document.getElementById("progress");
+
+soundButton.addEventListener("change", function(e) {
+	//聲音
+ 	soundfile=e.target.files[0];
+    soundsize=soundfile.size;  
+    soundfname=soundfile.name;
+    //取得副檔名
+    soundfiletype=soundfname.substring(soundfname.indexOf(".")).toLowerCase();
+    if(soundfiletype!=".mp3" && soundfiletype!=".wav"  && soundfiletype!=".m4a")
+    {
+        alert("聲音只接受 mp3 wav m4a");
+    }
+ 	else if(soundsize>5*1024*1024)
+    {
+        alert("聲音必須小於5MB");
+    }
+});
+
+imageButton.addEventListener("change", function(e) {
+    //圖片
+    imagefile=e.target.files[0];
+    imagesize=imagefile.size;  
+    imagefname=imagefile.name;
+    //取得副檔名
+    imagefiletype=imagefname.substring(imagefname.indexOf(".")).toLowerCase();
+    if(imagefiletype!=".jpeg" && imagefiletype!=".png" && imagefiletype!=".jpg")
+    {
+        alert("圖片只接受 jpg png");
+    }
+    else if(imagesize>2*1024*1024)
+    {
+        alert("圖片必須小於2MB");
+    }
+});
+
+send.addEventListener("click",function(){
+    //標題
+    soundtitle=document.getElementById("soundtitle").value;
+    //分類
+    soundtype=document.getElementById("soundtype").value;
+
+    var today=new Date();
+    var currentDateTime = today.getFullYear()+'_';
+    //月
+    if( (today.getMonth()+1) < 10)
+    {
+        currentDateTime+='0'+(today.getMonth()+1)+'_';
+    }
+    else
+    {
+        currentDateTime += (today.getMonth()+1) + '_';
+    }
+    //日
+    if(today.getDate() < 10)
+    {
+        currentDateTime+='0'+today.getDate()+'_';
+    }
+    else
+    {
+        currentDateTime += today.getDate() + '_';
+    }
+    //時
+    if(today.getHours() < 10)
+    {
+        currentDateTime+='0'+today.getHours()+'_';
+    }
+    else
+    {
+        currentDateTime += today.getHours() + '_';
+    }
+    //分
+    if(today.getMinutes() < 10)
+    {
+        currentDateTime+='0'+today.getMinutes()+'_';
+    }
+    else
+    {
+        currentDateTime += today.getMinutes() + '_';
+    }
+    //秒
+    if(today.getSeconds() < 10)
+    {
+        currentDateTime+='0'+today.getSeconds();
+    }
+    else
+    {
+        currentDateTime += today.getSeconds();
+    }
+
+    if(soundfname=="")
+    {
+        alert("請選擇音檔");
+    }
+    //聲音 < 5MB，圖片 < 1MB
+    else if(soundsize>5*1024*1024 || imagesize>2*1024*1024)
+    {
+        alert("請確認檔案大小");
+    }
+    else if(soundfiletype!=".mp3" && soundfiletype!=".wav"  && soundfiletype!=".m4a")
+    {
+        alert("不接受的聲音格式");
+    }
+    else if(imagefiletype!=".jpeg" && imagefiletype!=".png" && imagefiletype!=".jpg" && imagefiletype!="")
+    {
+        alert("不接受的圖片格式");
+    }
+    else if(soundtitle=="")
+    {
+        alert("請輸入標題");
+    }
+    else if(soundtype=="")
+    {
+        alert("請選擇聲音的類別");
+    } 
+    else
+    {
+        //檔名=日期時間+副檔名
+        soundfname=currentDateTime+''+soundfiletype;
+        imageprogress=100;
+        soundprogress=0;
+        if(imagefname!="")
+        {
+            imagefname=currentDateTime+''+imagefiletype;
+            imageprogress=0;
+        }
+        
+
+        //上傳聲音
+        soundstorageRef = storage.ref('sound/'+ soundfname);
+        let soundtask = soundstorageRef.put(soundfile);
+        soundtask.on('state_changed', function(snapshot){
+            // Observe state change events such as progress, pause, and resume
+            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+            soundprogress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('sound Upload is ' + soundprogress + '% done');
+            if(imageprogress==100 && soundprogress==100)
+            {
+                //投稿上傳firestore
+                //文件名稱為上傳時間
+                db.collection("playData").doc(currentDateTime).set({
+                    soundfile: soundfname,
+                    imagefile: imagefname,
+                    title: soundtitle,
+                    type: soundtype
+                });
+
+                document.getElementById("progress").innerHTML="上傳成功！";
+            }
+            else
+            {
+                let total_progress=(imageprogress/2)+(soundprogress/2);
+                document.getElementById("progress").innerHTML="上傳中....."+total_progress.toFixed(2)+"%";
+                document.getElementById("send").disabled="disabled";
+            }          
+        });
+
+        //上傳圖片
+        imagestorageRef = storage.ref('image/'+ imagefname);
+        let imagetask = imagestorageRef.put(imagefile);
+        imagetask.on('state_changed', function(snapshot){
+            // Observe state change events such as progress, pause, and resume
+            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+            imageprogress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('image Upload is ' + imageprogress + '% done');
+            if(imageprogress==100 && soundprogress==100)
+            {
+                //投稿上傳firestore
+                //文件名稱為上傳時間
+                db.collection("playData").doc(currentDateTime).set({
+                    soundfile: soundfname,
+                    imagefile: imagefname,
+                    title: soundtitle,
+                    type: soundtype
+                });
+
+                document.getElementById("progress").innerHTML="上傳成功！";
+            }
+            else
+            {
+                let total_progress=(imageprogress/2)+(soundprogress/2);
+                document.getElementById("progress").innerHTML="上傳中....."+total_progress.toFixed(2)+"%";
+                document.getElementById("send").disabled="disabled";
+            }
+        });
+
+    }
+});
+</script>
+</html>

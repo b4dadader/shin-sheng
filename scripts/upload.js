@@ -23,8 +23,12 @@ var imageButton=document.getElementById('imageButton');
 var send=document.getElementById("send");
 //音檔的檔名
 soundfname="";
+//聲音是否為音檔
+let isSound=false;
 //圖檔的檔名
 imagefname="";
+imagefiletype="";
+imagesize=0;
 //聲音的故事
 story="";
 var bool_upload=false;
@@ -56,16 +60,29 @@ soundButton.addEventListener("change", function(e) {
     soundsize=soundfile.size;  
     soundfname=soundfile.name;
     //取得副檔名
-    soundfiletype=soundfname.substring(soundfname.indexOf(".")).toLowerCase();
-    if(soundfiletype!=".mp3" && soundfiletype!=".wav"  && soundfiletype!=".m4a")
+    soundfiletype=soundfname.substr(-4,4).toLowerCase();
+    if(soundfiletype!=".mp3" && soundfiletype!=".wav"  && soundfiletype!=".m4a" && soundfiletype!=".mp4" && soundfiletype!=".mov")
     {
-        modal_text.innerHTML="聲音只接受 mp3 wav m4a";
+        modal_text.innerHTML="聲音只接受 mp3 wav m4a mp4 mov"+
+        "<br>你選取的檔案為 "+soundfiletype;
         modal.style.display = "block";
     }
- 	else if(soundsize>5*1024*1024)
+ 	else if(soundfiletype==".mp3" || soundfiletype==".wav"  || soundfiletype==".m4a")
     {
-        modal_text.innerHTML="聲音必須小於5MB";
-        modal.style.display = "block";
+        isSound=true;
+        if(soundsize>5*1024*1024)
+        {
+            modal_text.innerHTML="聲音必須小於5MB";
+            modal.style.display = "block";
+        }
+    }
+    else if(soundfiletype==".mp4" || soundfiletype==".mov")
+    {
+        isSound=false;
+        if(soundsize>10*1024*1024){
+            modal_text.innerHTML="影片必須小於10MB";
+            modal.style.display = "block";
+        }
     }
 });
 
@@ -78,7 +95,8 @@ imageButton.addEventListener("change", function(e) {
     imagefiletype=imagefname.substring(imagefname.indexOf(".")).toLowerCase();
     if(imagefiletype!=".jpeg" && imagefiletype!=".png" && imagefiletype!=".jpg")
     {
-        modal_text.innerHTML="圖片只接受 jpg png";
+        modal_text.innerHTML="圖片只接受 jpg png"+
+        "<br>你選取的檔案為 "+imagefiletype;
         modal.style.display = "block";
     }
     else if(imagesize>2*1024*1024)
@@ -143,23 +161,35 @@ send.addEventListener("click",function(){
         currentDateTime += today.getSeconds();
     }   
 
-    if(soundfname=="" || imagefname=="")
+    if(soundfname=="")
     {
-        modal_text.innerHTML="請選擇投稿檔案";
+        modal_text.innerHTML="請選擇投稿音檔";
         modal.style.display = "block";
     }
-    //聲音 < 5MB，圖片 < 1MB
-    else if(soundsize>5*1024*1024 || imagesize>2*1024*1024)
+    //聲音 < 5MB
+    else if(soundsize>5*1024*1024 && isSound)
     {
-        modal_text.innerHTML="請確認檔案大小";
+        modal_text.innerHTML="請確認聲音檔案大小";
         modal.style.display = "block";
     }
-    else if(soundfiletype!=".mp3" && soundfiletype!=".wav"  && soundfiletype!=".m4a")
+    //影片 < 10MB
+    else if(soundsize>10*1024*1024 && !isSound)
+    {
+        modal_text.innerHTML="請確認影片檔案大小";
+        modal.style.display = "block";
+    }
+    //圖片 < 2MB
+    else if(imagesize>2*1024*1024)
+    {
+        modal_text.innerHTML="請確認圖片檔案大小";
+        modal.style.display = "block";
+    }
+    else if(soundfiletype!=".mp3" && soundfiletype!=".wav"  && soundfiletype!=".m4a" && soundfiletype!=".mp4" && soundfiletype!=".mov")
     {
         modal_text.innerHTML="不接受的聲音格式";
         modal.style.display = "block";
     }
-    else if(imagefiletype!=".jpeg" && imagefiletype!=".png" && imagefiletype!=".jpg")
+    else if(imagefiletype!=".jpeg" && imagefiletype!=".png" && imagefiletype!=".jpg" && imagefiletype!="")
     {
         modal_text.innerHTML="不接受的圖片格式";
         modal.style.display = "block";
@@ -183,9 +213,14 @@ send.addEventListener("click",function(){
     {
         //檔名=日期時間+副檔名
         soundfname=currentDateTime+''+soundfiletype;
-        imagefname=currentDateTime+''+imagefiletype;
-        imageprogress=0;
+        imageprogress=100;
         soundprogress=0;
+        if(imagefname!="")
+        {
+            imagefname=currentDateTime+''+imagefiletype;
+            imageprogress=0;
+        }
+        
 
         //上傳聲音
         soundstorageRef = storage.ref('sound/'+ soundfname);
@@ -210,7 +245,9 @@ send.addEventListener("click",function(){
 
                 bool_upload=true;
                 document.getElementById("progress").innerHTML="上傳成功！";
-                modal_text.innerHTML="上傳成功！";
+                modal_text.innerHTML="上傳成功！"+
+                "<br><br>●請再次注意，上傳聲音完成後，即代表您同意將您的聲音及影像提供給「形聲」互動藝術作品。"+
+                "<br>●若上傳聲音之後想將聲音檔案刪除，可現場告知工作人員，或寄信至tjsps60925@gmail.com，我們會立即為您處理。";
                 modal.style.display = "block";
             }
             else
@@ -244,7 +281,9 @@ send.addEventListener("click",function(){
 
                 bool_upload=true;
                 document.getElementById("progress").innerHTML="上傳成功！";
-                modal_text.innerHTML="上傳成功！";
+                modal_text.innerHTML="上傳成功！"+
+                "<br><br>●請再次注意，上傳聲音完成後，即代表您同意將您的聲音及影像提供給「形聲」互動藝術作品。"+
+                "<br>●若上傳聲音之後想將聲音檔案刪除，可現場告知工作人員，或寄信至tjsps60925@gmail.com，我們會立即為您處理。";
                 modal.style.display = "block";
             }
             else

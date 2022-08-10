@@ -14,9 +14,9 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
         <!--SDK更新要注意-->
-        <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-storage.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-firestore.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-storage.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-firestore.js"></script>
     </head>
     
     <body style="color: rgb(89,87,87)">
@@ -40,35 +40,35 @@
             <!--回答-->
             <div id="answer">
             <!--上傳聲音-->
-            <div class="row">
+            <div class="row align-items-center">
                 <div class="col-lg-4 col-12"><h2>聲音檔案：</h2></div>
 
                 <div class="col-lg col-12 align-self-center">
-                    <input type="file" id="soundButton" accept=".mp3,.wav,.m4a">
+                    <input type="file" id="soundButton" accept=".mp3,.wav,.m4a,.mp4,.mov">
                 </div>
             </div>
 
             <!--上傳圖片-->
-            <div class="row">
-                <div class="col-lg-4 col-12"><h2>圖片檔案：</h2></div>
+            <div class="row align-items-center">
+                <div class="col-lg-4 col-12"><h2>圖片檔案：</h2>自由投稿</div>
 
-                <div class="col-lg col-12 align-self-center">
+                <div class="col-lg col-12">
                     <input type="file" id="imageButton" accept=".jpg,.png">
                 </div>
             </div> 
             <!--聲音名稱-->
-            <div class="row">
+            <div class="row align-items-center">
                 <div class="col-lg-4 col-12"><h2>聲音標題：</h2></div>
 
-                <div class="col-lg col-12 align-self-center">
+                <div class="col-lg col-12">
                     <input type="text" id="soundtitle" maxlength="11">
                 </div>
             </div>
             <!--分類-->
-            <div class="row">
+            <div class="row align-items-center">
                 <div class="col-lg-4 col-12"><h2>聲音分類：</h2></div>
 
-                <div class="col-lg col-12 align-self-center">
+                <div class="col-lg col-12">
                     <select id="soundtype">
                         <option value="">請選擇聲音類別</option>
                         <option value="音樂">音樂</option>
@@ -80,10 +80,10 @@
                 </div>
             </div>
             <!--使用者名稱-->
-            <div class="row">
+            <div class="row align-items-center">
                 <div class="col-lg-4 col-12"><h2>您的暱稱：</h2></div>
 
-                <div class="col-lg col-12 align-self-center">
+                <div class="col-lg col-12">
                     <input type="text" id="user" maxlength="6">
                 </div>
             </div>          
