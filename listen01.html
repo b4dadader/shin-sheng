@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>聆聽聲音==工作人員專用==</title>
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-firestore.js"></script>
+</head>
+<body>
+    <h2>聲音分類：</h2>
+    <select id="soundtype">
+        <option value="動漫卡通">動漫卡通</option>
+        <option value="廣告">廣告</option>
+    </select>
+    <input type="button" id="send" value="執行">
+    <br>
+    <input type="button" value="首頁" onclick="location.href='index.html'">
+    <input type="button" value="上傳聲音" onclick="location.href='upload01.html'">
+    <div id="url"></div>
+    <div id="answer"></div>
+</body>
+<script>
+let firebaseConfig = {
+    apiKey: "AIzaSyCAeZNkQKQETvlIPhJ_iFcaTipQmwSOdUk",
+    authDomain: "shinsheng-53c4c.firebaseapp.com",
+    databaseURL: "https://shinsheng-53c4c-default-rtdb.firebaseio.com",
+    projectId: "shinsheng-53c4c",
+    storageBucket: "shinsheng-53c4c.appspot.com",
+    messagingSenderId: "903574454139",
+    appId: "1:903574454139:web:dff1fe995ad2ccffd487de",
+    measurementId: "G-PYQZBBB4QG"
+};
+firebase.initializeApp(firebaseConfig);
+//……………………………………………………………………..
+const db = firebase.firestore();
+const storage = firebase.storage();
+const docRef = db.collection("playData");
+let info={};
+let i=0;
+//選擇聲音分類
+const soundtype=document.getElementById("soundtype");
+//列出資料
+const div_answer=document.getElementById("answer");
+//播放聲音
+const div_url=document.getElementById("url");
+
+send.addEventListener("click",function(){
+    let type=soundtype.value;
+    div_answer.innerHTML="";
+    div_url.innerHTML="";
+    i=0;
+    docRef.get().then(function(querySnapshot) {
+        querySnapshot.forEach(function(doc) {
+            // doc.data() is never undefined for query doc snapshots
+            if(doc.data().type==type)
+            {
+                info[i]=doc.data();
+                div_answer.innerHTML+='<input type="button" value="'+info[i].title+'" onclick="Listen(\''+i+'\')">';   
+                i++;                
+                if(i%3==0)
+                {
+                    div_answer.innerHTML+="<br>";
+                }
+            }
+        });
+        for(let j=0; j<i; j++)
+        {
+            storage.ref("sound/"+info[j].soundfile).getDownloadURL().then(function(url) {
+                info[j].soundfile=url;
+            });
+        }
+    });
+});
+
+function Listen(i)
+{
+    //小視窗內容
+    div_url.innerHTML='<a href="'+info[i].soundfile+'">'+info[i].title+'</a><audio controls volume="max" src="'+info[i].soundfile+'"></audio>';
+}
+</script>
+</html>
