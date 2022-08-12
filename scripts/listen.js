@@ -1,13 +1,13 @@
 //上傳前請確認專案
 var firebaseConfig = {
-    apiKey: "AIzaSyCAeZNkQKQETvlIPhJ_iFcaTipQmwSOdUk",
+    apiKey: "",
     authDomain: "shinsheng-53c4c.firebaseapp.com",
     databaseURL: "https://shinsheng-53c4c-default-rtdb.firebaseio.com",
     projectId: "shinsheng-53c4c",
     storageBucket: "shinsheng-53c4c.appspot.com",
-    messagingSenderId: "903574454139",
-    appId: "1:903574454139:web:dff1fe995ad2ccffd487de",
-    measurementId: "G-PYQZBBB4QG"
+    messagingSenderId: "",
+    appId: "",
+    measurementId: ""
 };
 firebase.initializeApp(firebaseConfig);
 //……………………………………………………………………..
